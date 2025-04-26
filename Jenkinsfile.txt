@@ -1,21 +1,49 @@
 pipeline {
     agent any
 
+    environment {
+        APP_NAME = 'SimpleApp'
+    }
+
     stages {
-        stage('One') {
+        stage('Checkout') {
             steps {
-                echo 'Building the project...'
+                // Checkout code from Git repository using credentials
+                git credentialsId: 'github-pat', url: 'https://github.com/swaraj0702/Simple-App-7.git'
             }
         }
-        stage('Two') {
+
+        stage('Build') {
             steps {
-                echo 'Running tests...'
+                echo "Building the application..."
+                // Add your build steps here, for example:
+                // sh 'mvn clean install' or 'npm install'
             }
         }
-        stage('Three') {
+
+        stage('Test') {
             steps {
-                echo 'Deploying application...'
+                echo "Running tests..."
+                // Add your test steps here, for example:
+                // sh 'mvn test' or 'npm test'
             }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo "Deploying the application..."
+                // Add your deploy steps here, for example:
+                // sh 'deploy.sh' or 'kubectl apply -f deployment.yaml'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Pipeline succeeded!"
+        }
+        failure {
+            echo "Pipeline failed!"
         }
     }
 }
